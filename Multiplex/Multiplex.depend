@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1574191496 source:c:\users\migue\documents\github\multiplex\multiplex\main.cpp
+	<iostream>
+	"Listas.h"
+	"Listas.cpp"
+
+1365030094 c:\users\migue\documents\github\multiplex\multiplex\listas.h
+
+1365029843 source:c:\users\migue\documents\github\multiplex\multiplex\listas.cpp
+	<iostream>
+	"listas.h"
+
+1365029843 c:\users\migue\documents\github\multiplex\multiplex\listas.cpp
+	<iostream>
+	"listas.h"
+
