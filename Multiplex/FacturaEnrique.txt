@@ -1,0 +1,8 @@
+Tu factura
+Cliente: Enrique
+Pelicula: Peli1
+Sala: A
+Fecha: 1100/11/2019
+Horario: 1100 - 1300
+Cantidad de boletas: 1
+Total a pagar: $12000

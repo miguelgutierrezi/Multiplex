@@ -64,6 +64,22 @@ sPelicula obtenerPelicula(Lista<sPelicula>* peliculas, int pos)
     }
 }
 
+sSillas obtenerSilla(Lista<sSillas>* sillas, int pos)
+{
+    Nodo<sSillas> * aux;
+    aux = sillas->cab;
+    int p = 0;
+    while(aux != NULL)
+    {
+        if(pos == p)
+        {
+            return aux->info;
+        }
+        aux = aux->sig;
+        p++;
+    }
+}
+
 void imprimirSillas (Lista<sSillas>* sillas)
 {
     Nodo<sSillas>* aux = sillas->cab;
@@ -537,73 +553,86 @@ void consultarCartelera (Lista<sSalas>* salas)
 }
 
 void ingresoDePersonasPorFecha (Lista<sTiquete>* tiquetes) {
-    char* fecha1;
-    char* fecha2;
-    int dia1, dia2, mes1, mes2, anho1, anho2, cont = 0;
+    int dia1 = -1, dia2 = -1, mes1 = -1, mes2 = -1, anho1 = -1, anho2 = -1, cont = 0;
 
-    cout<<"Ingrese la fecha inicial a comparar (Ej: 01/01/2000): ";
-    cin>>fecha1;
-    dia1 = atoi(strtok(fecha1, "/"));
-    mes1 = atoi(strtok(NULL, "/"));
-    anho1 = atoi(strtok(NULL, "/"));
+    if (vacia(tiquetes)) {
+        cout<<"No se han vendido tiquetes"<<endl;
+    }
+    else {
+        cout<<"Ingrese el dia de la fecha inicial a comparar: ";
+        cin>>dia1;
+        cout<<"Ingrese el mes de la fecha inicial a comparar: ";
+        cin>>mes1;
+        cout<<"Ingrese el anho de la fecha inicial a comparar: ";
+        cin>>anho1;
 
-    cout<<"Ingrese la fecha final a comparar (Ej: 01/01/2000): ";
-    cin>>fecha2;
-    dia2 = atoi(strtok(fecha2, "/"));
-    mes2 = atoi(strtok(NULL, "/"));
-    anho2 = atoi(strtok(NULL, "/"));
+        cout<<"Ingrese el dia de la fecha final a comparar: ";
+        cin>>dia2;
+        cout<<"Ingrese el mes de la fecha final a comparar: ";
+        cin>>mes2;
+        cout<<"Ingrese el anho de la fecha final a comparar: ";
+        cin>>anho2;
 
-    Nodo<sTiquete>* aux = tiquetes->cab;
-    while (aux != NULL) {
-        if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
-            if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
-                if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
-                    cont++;
+        Nodo<sTiquete>* aux = tiquetes->cab;
+        while (aux != NULL) {
+            if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
+                if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
+                    if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
+                        cont++;
+                    }
                 }
             }
+            aux = aux->sig;
         }
-        aux = aux->sig;
-    }
 
-    cout<<"Un total de "<<cont<<" personas, ingresaron al multiplex entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+        cout<<"Un total de "<<cont<<" personas, ingresaron al multiplex entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+    }
 }
 
 void tiquetesPorFecha(Lista<sTiquete>* tiquetes) {
-    char* fecha1;
-    char* fecha2;
     int dia1, dia2, mes1, mes2, anho1, anho2;
     float valor = 0;
+    if (vacia(tiquetes)) {
+        cout<<"No se han vendido tiquetes"<<endl;
+    }
+    else {
+        cout<<"Ingrese el dia de la fecha inicial a comparar: ";
+        cin>>dia1;
+        cout<<"Ingrese el mes de la fecha inicial a comparar: ";
+        cin>>mes1;
+        cout<<"Ingrese el anho de la fecha inicial a comparar: ";
+        cin>>anho1;
 
-    cout<<"Ingrese la fecha inicial a comparar (Ej: 01/01/2000): ";
-    cin>>fecha1;
-    dia1 = atoi(strtok(fecha1, "/"));
-    mes1 = atoi(strtok(NULL, "/"));
-    anho1 = atoi(strtok(NULL, "/"));
+        cout<<"Ingrese el dia de la fecha final a comparar: ";
+        cin>>dia2;
+        cout<<"Ingrese el mes de la fecha final a comparar: ";
+        cin>>mes2;
+        cout<<"Ingrese el anho de la fecha final a comparar: ";
+        cin>>anho2;
 
-    cout<<"Ingrese la fecha final a comparar (Ej: 01/01/2000): ";
-    cin>>fecha2;
-    dia2 = atoi(strtok(fecha2, "/"));
-    mes2 = atoi(strtok(NULL, "/"));
-    anho2 = atoi(strtok(NULL, "/"));
-
-    Nodo<sTiquete>* aux = tiquetes->cab;
-    while (aux != NULL) {
-        if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
-            if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
-                if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
-                    valor += (aux->info).costo;
+        Nodo<sTiquete>* aux = tiquetes->cab;
+        while (aux != NULL) {
+            if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
+                if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
+                    if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
+                        valor += (aux->info).costo;
+                    }
                 }
             }
+            aux = aux->sig;
         }
-        aux = aux->sig;
-    }
 
-    cout<<"Un total de $"<<valor<<" se recaudaron entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+        cout<<"Un total de $"<<valor<<" se recaudaron entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+    }
 }
 
 void comprarTiquete (Lista<sSalas>* salas, Lista<sTiquete>* tiquetes, Lista<sPelicula>* peliculas) {
-    int pos;
-    string nom;
+    int pos, cant, posS, dia, mes, anho;
+    float total = 0;
+    string nom, cliente, sala;
+    int hora_inicio, hora_fin;
+    ofstream myfile;
+    sTiquete tiquete;
     if (vacia(salas))
     {
         cout<<"No hay salas en el sistema"<<endl;
@@ -628,6 +657,12 @@ void comprarTiquete (Lista<sSalas>* salas, Lista<sTiquete>* tiquetes, Lista<sPel
                     cout<<"Dia: "<<(auxP->info).dia<<"/"<<(auxP->info).mes<<"/"<<(auxP->info).anho<<endl;
                     cout<<"Horario: "<<(auxP->info).hora_inicio<<" - "<<(auxP->info).hora_fin<<endl;
                     cout<<endl;
+
+                    dia = (auxP->info).dia;
+                    mes = (auxP->info).mes;
+                    anho = (auxP->info).anho;
+                    hora_inicio = dia = (auxP->info).hora_inicio;
+                    hora_fin = (auxP->info).hora_fin;
                 }
                 auxP = auxP->sig;
             }
@@ -637,6 +672,109 @@ void comprarTiquete (Lista<sSalas>* salas, Lista<sTiquete>* tiquetes, Lista<sPel
 
         cout<<"Ingrese el numero de Sala en la que quiere ver la pelicula: ";
         cin>>pos;
+        aux = salas->cab;
+        p = 1;
+        while (aux != NULL)
+        {
+            if (p == pos && tamano((aux->info).Lista_sillas) > 0) {
+                imprimirSillasDisponibles((aux->info).Lista_sillas);
+                cout<<"Cuantas sillas desea comprar?: ";
+                cin>>cant;
+                if (cant <= tamano((aux->info).Lista_sillas)) {
+                    sala = (aux->info).id;
+                    for (int i = 0; i < cant; i++) {
+                        sSillas s;
+                        cout<<"Ingrese la posicion de la silla "<<i+1<<" a comprar: ";
+                        cin>>posS;
+                        s = obtenerSilla((aux->info).Lista_sillas, posS - 1);
+                        Nodo<sSillas>* auxS = (aux->info).Lista_sillas->cab;
+                        int pS = 1;
+                        while (auxS != NULL) {
+                            if (pS == posS) {
+                                (auxS->info).estado = true;
+                            }
+                            pS++;
+                            auxS = auxS->sig;
+                        }
+                        total += s.valor;
+                    }
+                    cout<<"Ingrese el nombre del cliente: ";
+                    cin>>cliente;
+
+                    string nomArchivo = "Factura" + cliente + ".txt";
+                    myfile.open(nomArchivo.c_str());
+                    myfile<<"Tu factura"<<endl;
+                    myfile<<"Cliente: "<<cliente<<endl;
+                    myfile<<"Pelicula: "<<nom<<endl;
+                    myfile<<"Sala: "<<sala<<endl;
+                    myfile<<"Fecha: "<<dia<<"/"<<mes<<"/"<<anho<<endl;
+                    myfile<<"Horario: "<<hora_inicio<<" - "<<hora_fin<<endl;
+                    myfile<<"Cantidad de boletas: "<<cant<<endl;
+                    myfile<<"Total a pagar: $"<<total;
+                    myfile.close();
+
+                    tiquete.cliente = cliente;
+                    tiquete.anho = anho;
+                    tiquete.costo = total;
+                    tiquete.dia = dia;
+                    tiquete.hora_fin = hora_fin;
+                    tiquete.hora_inicio = hora_inicio;
+                    tiquete.mes = mes;
+                    tiquete.pelicula = nom;
+                    tiquete.sala = sala;
+                    insertar(tiquetes, tiquete);
+                    cout<<"Venta exitosa"<<endl;
+
+                } else {
+                    cout<<"No hay sillas suficientes"<<endl;
+                }
+            }
+            aux = aux->sig;
+        }
+    }
+}
+
+void actualizarPrecios (Lista<sSalas>* salas) {
+    float preferencial, general;
+    int pos;
+    if (vacia(salas))
+    {
+        cout<<"No hay salas en el sistema"<<endl;
+    }
+    else
+    {
+        imprimirSalas(salas);
+        cout<<"Ingrese el numero de la sala que va a actualizar: ";
+        cin>>pos;
+        if (pos <= tamano(salas))
+        {
+            Nodo<sSalas>* aux = salas->cab;
+            int p = 1;
+            while(aux != NULL) {
+                if (p == pos) {
+                    cout<<"Ingrese el nuevo costo para las sillas preferenciales: ";
+                    cin>>preferencial;
+                    cout<<"Ingrese el nuevo costo para las sillas generales: ";
+                    cin>>general;
+
+                    Nodo<sSillas>* auxS = (aux->info).Lista_sillas->cab;
+                    while(auxS != NULL) {
+                        if ((auxS->info).tipo == 'P') {
+                            (auxS->info).valor = preferencial;
+                        }
+                        else {
+                            (auxS->info).valor = general;
+                        }
+                        auxS = auxS->sig;
+                    }
+                }
+                aux = aux->sig;
+            }
+        }
+        else
+        {
+            cout<<"Sala no existe"<<endl;
+        }
     }
 }
 
@@ -660,6 +798,7 @@ int main()
         cout<<"\t9. Consultar salas por pelicula"<<endl;
         cout<<"\t10. Consultar ingreso de personas por fecha"<<endl;
         cout<<"\t11. Consultar venta de tiquetes por fecha"<<endl;
+        cout<<"\t12. Actualizar precios de sillas"<<endl;
         cout<<"\t0. Salir"<<endl;
         cout<<"Que desea hacer?: ";
         cin>>n;
@@ -698,12 +837,15 @@ int main()
         case 11:
             tiquetesPorFecha(tiquetes);
             break;
+        case 12:
+            actualizarPrecios(salas);
+            break;
         case 0:
             cout<<"Gracias por utilizar nuestros servicios"<<endl;
             break;
         }
 
     }
-    while(n == 1 || n == 2 || n == 3 || n == 4 || n == 5 || n == 6 || n == 7 || n == 8 || n == 9 || n == 10 || n == 11);
+    while(n == 1 || n == 2 || n == 3 || n == 4 || n == 5 || n == 6 || n == 7 || n == 8 || n == 9 || n == 10 || n == 11 || n == 12);
     return 0;
 }
