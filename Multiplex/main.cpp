@@ -1,5 +1,8 @@
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include <cstring>
+#include <cstdlib>
 #include "Listas.h"
 #include "Listas.cpp"
 
@@ -10,13 +13,14 @@ struct sSillas
     bool estado;
     char tipo;
     int id;
+    float valor;
 };
 
 struct sPelicula
 {
     string nombre;
-    string hora_inicio;
-    string hora_fin;
+    int hora_inicio;
+    int hora_fin;
     int dia;
     int mes;
     int anho;
@@ -32,7 +36,20 @@ struct sSalas
     Lista<sSillas>* Lista_sillas;
 };
 
-sPelicula obtenerPelicula(Lista<sPelicula>* peliculas, int pos) {
+struct sTiquete {
+    string cliente;
+    string pelicula;
+    string sala;
+    int dia;
+    int mes;
+    int anho;
+    int hora_inicio;
+    int hora_fin;
+    float costo;
+};
+
+sPelicula obtenerPelicula(Lista<sPelicula>* peliculas, int pos)
+{
     Nodo<sPelicula> * aux;
     aux = peliculas->cab;
     int p = 0;
@@ -69,7 +86,8 @@ void imprimirSillasDisponibles (Lista<sSillas>* sillas)
     int pos = 1;
     while(aux!=NULL)
     {
-        if (!(aux->info).estado) {
+        if (!(aux->info).estado)
+        {
             cout<<"  Numero de Silla: "<<pos<<endl;
             cout<<"\t  id: "<<(aux->info).id<<endl;
             cout<<"\t  Tipo de silla: "<<(aux->info).tipo<<endl;
@@ -145,6 +163,7 @@ bool verificarNombrePelicula (Lista<sPelicula>* peliculas, string nombre)
 
 void adicionarSala (Lista<sSalas>* salas)
 {
+    float general, preferencial;
     string id;
     sSalas sala;
     do
@@ -160,12 +179,17 @@ void adicionarSala (Lista<sSalas>* salas)
     cin>>sala.sillas_disponibles;
     sala.Lista_peliculas = crearLista<sPelicula>();
     sala.Lista_sillas = crearLista<sSillas>();
+    cout<<"Ingrese el costo de las sillas preferenciales: ";
+    cin>>preferencial;
+    cout<<"Ingrese el costo de las sillas generales: ";
+    cin>>general;
     for (int i = 0; i < sala.cant_sillas/2; i++)
     {
         sSillas silla;
         silla.id = tamano(sala.Lista_sillas) + 1;
         silla.tipo = 'P';
         silla.estado = false;
+        silla.valor = preferencial;
         insertar(sala.Lista_sillas, silla);
     }
     for (int i = sala.cant_sillas/2; i < sala.cant_sillas; i++)
@@ -174,6 +198,7 @@ void adicionarSala (Lista<sSalas>* salas)
         silla.id = tamano(sala.Lista_sillas) + 1;
         silla.tipo = 'G';
         silla.estado = false;
+        silla.valor = general;
         insertar(sala.Lista_sillas, silla);
     }
     insertar(salas, sala);
@@ -215,9 +240,9 @@ void agregarPelicula (Lista<sSalas>* salas, Lista<sPelicula>* peliculas)
                     pelicula.mes = 1+ltm->tm_mon;
                     pelicula.anho = 1900+ltm->tm_year;
                     cout<<"La fecha de publicacion de la pelicula es: "<<pelicula.dia<<"/"<<pelicula.mes<<"/"<<pelicula.anho<<endl;
-                    cout<<"Ingrese la hora de inicio de la pelicula: ";
+                    cout<<"Ingrese la hora de inicio de la pelicula (Formato militar, Ej: 1100): ";
                     cin>>pelicula.hora_inicio;
-                    cout<<"Ingrese la hora de fin de la pelicula: ";
+                    cout<<"Ingrese la hora de fin de la pelicula (Formato militar, Ej: 1100): ";
                     cin>>pelicula.hora_fin;
                     cout<<"Ingrese el nombre de la imagen de la pelicula: ";
                     cin>>pelicula.nombre_imagen;
@@ -369,8 +394,10 @@ void eliminarPelicula(Lista<sSalas>* salas, Lista<sPelicula>* peliculas)
             {
                 Nodo<sPelicula>* auxP = (aux->info).Lista_peliculas->cab;
                 int posS = 1;
-                while (auxP != NULL) {
-                    if ((auxP->info).nombre == nombre) {
+                while (auxP != NULL)
+                {
+                    if ((auxP->info).nombre == nombre)
+                    {
                         posP = posS;
                     }
                     posS++;
@@ -388,7 +415,8 @@ void eliminarPelicula(Lista<sSalas>* salas, Lista<sPelicula>* peliculas)
     }
 }
 
-void eliminarSilla(Lista<sSalas>* salas) {
+void eliminarSilla(Lista<sSalas>* salas)
+{
     int pos;
     int posS;
     if (vacia(salas))
@@ -406,16 +434,19 @@ void eliminarSilla(Lista<sSalas>* salas) {
             int p = 1;
             while(aux!=NULL)
             {
-                if (pos == p) {
+                if (pos == p)
+                {
                     imprimirSillasDisponibles((aux->info).Lista_sillas);
                     cout<<"Ingrese el numero de la silla que quiere eliminar: ";
                     cin>>posS;
-                    if (posS <= tamano((aux->info).Lista_sillas)) {
+                    if (posS <= tamano((aux->info).Lista_sillas))
+                    {
                         eliminar((aux->info).Lista_sillas, posS - 1);
                         (aux->info).cant_sillas--;
                         (aux->info).sillas_disponibles--;
                     }
-                    else {
+                    else
+                    {
                         cout<<"Silla inexistente"<<endl;
                     }
                 }
@@ -430,7 +461,8 @@ void eliminarSilla(Lista<sSalas>* salas) {
     }
 }
 
-void consultaSalasPorPelicula (Lista<sSalas>* salas, Lista<sPelicula>* peliculas) {
+void consultaSalasPorPelicula (Lista<sSalas>* salas, Lista<sPelicula>* peliculas)
+{
     string nom;
     if (vacia(salas))
     {
@@ -443,11 +475,15 @@ void consultaSalasPorPelicula (Lista<sSalas>* salas, Lista<sPelicula>* peliculas
         cin>>nom;
 
         Nodo<sSalas>* aux = salas->cab;
-
-        while (aux != NULL) {
+        int p = 1;
+        while (aux != NULL)
+        {
             Nodo<sPelicula>* auxP = (aux->info).Lista_peliculas->cab;
-            while (auxP != NULL) {
-                if ((auxP->info).nombre == nom) {
+            while (auxP != NULL)
+            {
+                if ((auxP->info).nombre == nom)
+                {
+                    cout<<"Numero: "<<p<<endl;
                     cout<<"Sala: "<<(aux->info).id<<endl;
                     cout<<"Dia: "<<(auxP->info).dia<<"/"<<(auxP->info).mes<<"/"<<(auxP->info).anho<<endl;
                     cout<<"Horario: "<<(auxP->info).hora_inicio<<" - "<<(auxP->info).hora_fin<<endl;
@@ -455,8 +491,152 @@ void consultaSalasPorPelicula (Lista<sSalas>* salas, Lista<sPelicula>* peliculas
                 }
                 auxP = auxP->sig;
             }
+            p++;
             aux = aux->sig;
         }
+    }
+}
+
+void consultarCartelera (Lista<sSalas>* salas)
+{
+    ofstream myfile;
+    myfile.open ("cartelera.html");
+    myfile << "<!DOCTYPE html><html><head></head><body>";
+    myfile<<"<h1 style=\"text-align: center;\">Consultar cartelera</h1>";
+    myfile<<"<table style=\"height: 104px; margin-left: auto; margin-right: auto;\" border=\"2\" width=\"584\"\">";
+    myfile<<"<tbody><tr>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Sala</td>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Película</td>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Fecha</td>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Hora inicio</td>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Hora fin</td>";
+    myfile<<"<td style=\"width: 110px; text-align: center;\">Imagen</td></tr>";
+
+    Nodo<sSalas>* aux = salas->cab;
+
+    while(aux != NULL)
+    {
+        Nodo<sPelicula>* auxP = (aux->info).Lista_peliculas->cab;
+        while(auxP != NULL)
+        {
+            myfile<<"<tr><td style=\"width: 110px; text-align: center;\">"<<(aux->info).id;
+            myfile<<"</td><td style=\"width: 110px; text-align: center;\">"<<(auxP->info).nombre;
+            myfile<<"</td><td style=\"width: 110px; text-align: center;\">"<<(auxP->info).dia<<"/"<<(auxP->info).mes<<"/"<<(auxP->info).anho;
+            myfile<<"</td><td style=\"width: 110px; text-align: center;\">"<<(auxP->info).hora_inicio;
+            myfile<<"</td><td style=\"width: 110px; text-align: center;\">"<<(auxP->info).hora_fin;
+            myfile<<"</td><td style=\"width: 110px; text-align: center;\">";
+            myfile<<"<img src=\""<<(auxP->info).nombre_imagen<<"\" width=\"80\" height=\"100\"/>";
+            myfile<<"</tr>";
+            auxP = auxP->sig;
+        }
+        aux = aux->sig;
+    }
+
+    myfile << "</tbody></table></body></html>";
+    myfile.close();
+}
+
+void ingresoDePersonasPorFecha (Lista<sTiquete>* tiquetes) {
+    char* fecha1;
+    char* fecha2;
+    int dia1, dia2, mes1, mes2, anho1, anho2, cont = 0;
+
+    cout<<"Ingrese la fecha inicial a comparar (Ej: 01/01/2000): ";
+    cin>>fecha1;
+    dia1 = atoi(strtok(fecha1, "/"));
+    mes1 = atoi(strtok(NULL, "/"));
+    anho1 = atoi(strtok(NULL, "/"));
+
+    cout<<"Ingrese la fecha final a comparar (Ej: 01/01/2000): ";
+    cin>>fecha2;
+    dia2 = atoi(strtok(fecha2, "/"));
+    mes2 = atoi(strtok(NULL, "/"));
+    anho2 = atoi(strtok(NULL, "/"));
+
+    Nodo<sTiquete>* aux = tiquetes->cab;
+    while (aux != NULL) {
+        if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
+            if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
+                if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
+                    cont++;
+                }
+            }
+        }
+        aux = aux->sig;
+    }
+
+    cout<<"Un total de "<<cont<<" personas, ingresaron al multiplex entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+}
+
+void tiquetesPorFecha(Lista<sTiquete>* tiquetes) {
+    char* fecha1;
+    char* fecha2;
+    int dia1, dia2, mes1, mes2, anho1, anho2;
+    float valor = 0;
+
+    cout<<"Ingrese la fecha inicial a comparar (Ej: 01/01/2000): ";
+    cin>>fecha1;
+    dia1 = atoi(strtok(fecha1, "/"));
+    mes1 = atoi(strtok(NULL, "/"));
+    anho1 = atoi(strtok(NULL, "/"));
+
+    cout<<"Ingrese la fecha final a comparar (Ej: 01/01/2000): ";
+    cin>>fecha2;
+    dia2 = atoi(strtok(fecha2, "/"));
+    mes2 = atoi(strtok(NULL, "/"));
+    anho2 = atoi(strtok(NULL, "/"));
+
+    Nodo<sTiquete>* aux = tiquetes->cab;
+    while (aux != NULL) {
+        if(((aux->info).anho >= anho1) && ((aux->info).anho <= anho2)) {
+            if(((aux->info).mes >= mes1) && ((aux->info).mes <= mes2)) {
+                if(((aux->info).dia >= dia1) && ((aux->info).dia <= dia2)) {
+                    valor += (aux->info).costo;
+                }
+            }
+        }
+        aux = aux->sig;
+    }
+
+    cout<<"Un total de $"<<valor<<" se recaudaron entre "<<dia1<<"/"<<mes1<<"/"<<anho1<<" y "<<dia2<<"/"<<mes2<<"/"<<anho2<<endl;
+}
+
+void comprarTiquete (Lista<sSalas>* salas, Lista<sTiquete>* tiquetes, Lista<sPelicula>* peliculas) {
+    int pos;
+    string nom;
+    if (vacia(salas))
+    {
+        cout<<"No hay salas en el sistema"<<endl;
+    }
+    else
+    {
+        imprimirPeliculas(peliculas);
+        cout<<"Ingrese el nombre de la pelicula que quiere consultar: ";
+        cin>>nom;
+
+        Nodo<sSalas>* aux = salas->cab;
+        int p = 1;
+        while (aux != NULL)
+        {
+            Nodo<sPelicula>* auxP = (aux->info).Lista_peliculas->cab;
+            while (auxP != NULL)
+            {
+                if ((auxP->info).nombre == nom)
+                {
+                    cout<<"Numero: "<<p<<endl;
+                    cout<<"Sala: "<<(aux->info).id<<endl;
+                    cout<<"Dia: "<<(auxP->info).dia<<"/"<<(auxP->info).mes<<"/"<<(auxP->info).anho<<endl;
+                    cout<<"Horario: "<<(auxP->info).hora_inicio<<" - "<<(auxP->info).hora_fin<<endl;
+                    cout<<endl;
+                }
+                auxP = auxP->sig;
+            }
+            p++;
+            aux = aux->sig;
+        }
+
+        cout<<"Ingrese el numero de Sala en la que quiere ver la pelicula: ";
+        cin>>pos;
     }
 }
 
@@ -464,6 +644,7 @@ int main()
 {
     Lista<sSalas>* salas = crearLista<sSalas>();
     Lista<sPelicula>* peliculas = crearLista<sPelicula>();
+    Lista<sTiquete>* tiquetes = crearLista<sTiquete>();
     int n;
     do
     {
@@ -492,7 +673,6 @@ int main()
             break;
         case 3:
             agregarPelicula(salas, peliculas);
-            imprimirPeliculas(peliculas);
             break;
         case 4:
             eliminarSala(salas);
@@ -502,19 +682,21 @@ int main()
             break;
         case 6:
             eliminarPelicula(salas, peliculas);
-            //imprimirPeliculas(peliculas);
-            //imprimirSalas(salas);
             break;
         case 7:
+            comprarTiquete(salas, tiquetes, peliculas);
             break;
         case 8:
+            consultarCartelera(salas);
             break;
         case 9:
             consultaSalasPorPelicula(salas, peliculas);
             break;
         case 10:
+            ingresoDePersonasPorFecha(tiquetes);
             break;
         case 11:
+            tiquetesPorFecha(tiquetes);
             break;
         case 0:
             cout<<"Gracias por utilizar nuestros servicios"<<endl;

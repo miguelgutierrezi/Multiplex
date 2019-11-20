@@ -1,7 +1,10 @@
 # depslib dependency file v1.0
-1574209450 source:c:\users\migue\documents\github\multiplex\multiplex\main.cpp
+1574228948 source:c:\users\migue\documents\github\multiplex\multiplex\main.cpp
 	<iostream>
 	<ctime>
+	<fstream>
+	<cstring>
+	<cstdlib>
 	"Listas.h"
 	"Listas.cpp"
 
