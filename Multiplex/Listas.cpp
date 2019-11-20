@@ -110,7 +110,7 @@ T obtenerDato(Lista<T> * lista, int pos)
            if(pos == p)
            {
                   return aux->info;
-           }   
+           }
            aux = aux->sig;
            p++;
     }
@@ -119,7 +119,7 @@ T obtenerDato(Lista<T> * lista, int pos)
 
 template<typename T>
 Lista<T> * crearLista()
-{   
+{
       Lista<T> *lista;
       lista = new Lista<T>;
       lista->tam = 0;
@@ -150,7 +150,7 @@ bool eliminar(Lista<T> * lista, int pos)
              for(int i=0;i<pos-1;i++)
              {
                      aux = aux->sig;
-             }          
+             }
              Nodo<T> * temp;
              temp = aux->sig;
              aux->sig = temp->sig;
@@ -158,7 +158,7 @@ bool eliminar(Lista<T> * lista, int pos)
              delete temp;
              lista->tam--;
              return true;
-         }          
+         }
      }
      else
      {
